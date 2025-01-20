@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="level1.css"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego</title>
-    <style>
-        body {
-          
-  background-image: url('ge1e44.png');
-  background-size: cover; 
-  background-repeat: no-repeat; 
-  background-position: center; 
-
-            margin: 0;
-            overflow: hidden;
-            
-        }
-        canvas {
-            display: block;
-            background-color: #eee;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Juego</title>
+  <style>
+   body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #87ceeb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600"></canvas>
-    <script src="level1.js"></script>
+  <canvas></canvas>
+
+  <script src="./js/utils.js"></script>
+  <script src="./js/classes/CollisionBlock.js"></script>
+  <script src="./js/classes/Sprite.js"></script>
+  <script src="./js/classes/Player.js"></script>
+  <script src="./js/data/collisions.js"></script>
+  <script src="level1.js"></script>
 </body>
 </html>

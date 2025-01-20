@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap');
+
+/* ------------------------------ */
+/* Estilos Generales y Fondo Animado */
+/* ------------------------------ */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Uncial Antiqua', serif; /* Estilo medieval */
+    overflow: hidden; /* Para evitar scroll */
+}
+
+#background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/img/qQnJwE.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: -1; /* Para que esté detrás del contenido */
+    animation: moveZoom 15s infinite linear;
+    transform-origin: 1% 20%;  
+}
+
+@keyframes moveZoom {
+    0% { transform: scale(1) translate(0, 0); }
+    25% { transform: scale(1.1) translate(-5%, -5%); }
+    50% { transform: scale(1.2) translate(-10%, -10%); }
+    75% { transform: scale(1.1) translate(-5%, -5%); }
+    100% { transform: scale(1) translate(0, 0); }
+}
+
+/* ----------------------------- */
+/* Estilos del Header y Navegación */
+/* ----------------------------- */
+
+header {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    background: url('/img/fondoletrastitulo.png') no-repeat center center;
+    background-size: contain; /* Ajusta el tamaño del marco */
+    padding: 40px 20px;
+}
+
+nav {
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+    text-align: center;
+    margin-top: 10px; /* Espacio entre el header y el nav */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Disposición vertical */
+    justify-content: center;
+    align-items: center;
+}
+
+nav li {
+    margin-bottom: 2px; /* Reducido aún más el espacio entre los botones */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px; /* Padding para hacer los enlaces más grandes */
+    border-radius: 5px; /* Bordes redondeados */
+    font-family: 'Uncial Antiqua', serif;
+    display: block; /* Asegura que el enlace ocupe toda la fila */
+}
+
+nav a:hover {
+    color: #ccc;
+}
+
+/* ------------------------ */
+/* Estilos del Contenido Principal */
+/* ------------------------ */
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 160px); /* Ajusta la altura para el header y nav */
+    margin-top: 20px; /* Espacio entre el nav y el main */
+}
+
+/* --------------------------- */
+/* Estilos del Botón de Jugar */
+/* --------------------------- */
+
+#play-button {
+    display: inline-block;
+    background-image: url('/img/estiloboton.png');
+    background-size: cover;
+    background-position: center;
+    width: 300px;
+    height: 150px;
+    text-align: center;
+    line-height: 150px;
+    color: white;
+    font-size: 24px;
+    font-family: 'Uncial Antiqua', serif;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+#play-button:hover {
+    opacity: 0.8; /* Efecto de opacidad al pasar el ratón */
+}
+
+/* ------------------------------- */
+/* Estilos de los Botones de Niveles */
+/* ------------------------------- */
+
+#level-select ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+#level-select li {
+    margin-bottom: 2px; /* Reducido aún más el espacio entre los botones */
+}
+
+#level-select button {
+    background-color: #3498db; /* Color de fondo azul medieval */
+    color: white;
+    font-size: 24px;
+    padding: 20px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: 'Uncial Antiqua', serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#level-select button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#level-select button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* --------------------------- */
+/* Estilos de los Menús Emergentes (Opciones y Créditos) */
+/* --------------------------- */
+
+/* Estilo para los menús emergentes */
+#options-menu, #credits-menu {
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semitransparente */
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    display: none; /* Oculto inicialmente */
+    text-align: center;
+    z-index: 1000; /* Asegura que esté por encima de la capa overlay */
+}
+
+/* Botones de cierre en los menús emergentes */
+#options-menu button, #credits-menu button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px; /* Reducido el margen superior para acercar los botones */
+}
+
+#options-menu button:hover, #credits-menu button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+/* -------------------- */
+/* Capa de Fondo Oscura */
+/* -------------------- */
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+    display: none; /* Oculto por defecto */
+    z-index: 999; /* Asegura que esté encima del contenido */
+}
+
+/* ------------------------- */
+/* Estilos del Selector de Idioma */
+/* ------------------------- */
+
+#language-select {
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+}
+
+
+
+
+/* -------------------------- */
+/* Estilos del Botón de Opciones en la Esquina Inferior Izquierda */
+/* -------------------------- */
+
+/* -------------------------- */
+/* Estilos del Botón de Opciones en la Esquina Inferior Izquierda */
+/* -------------------------- */
+
+/* -------------------------- */
+/* Estilos del Botón de Opciones en la Esquina Inferior Izquierda */
+/* -------------------------- */
+
+#config-button {
+    position: fixed; /* Posición fija para que esté en la esquina */
+    bottom: 20px; /* Distancia desde el borde inferior */
+    left: 20px; /* Distancia desde el borde izquierdo */
+    background-image: url('/img/tuerca.png'); /* La nueva imagen de tuerca */
+    background-size: 80px 80px; /* Hacemos la tuerca más grande */
+    background-position: center;
+    background-repeat: no-repeat; /* Evitamos que la imagen se repita */
+    width: 80px; /* Ajustamos el tamaño del botón */
+    height: 80px;
+    border: none;
+    border-radius: 50%; /* Hacemos el botón redondo */
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10; /* Para que se vea por encima de otros elementos */
+    filter: invert(100%) sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(100%) contrast(100%); /* Cambia el color a blanco */
+}
+
+#config-button:hover {
+    opacity: 0.8;
+    transform: scale(1.1); /* Un pequeño efecto de ampliación al pasar el ratón */
+}
+
+#config-button:active {
+    transform: scale(0.95); /* Efecto de contracción al hacer clic */
+}
+
+
+#credits-button {
+    display: block;
+    background-image: url('/img/estiloboton.png'); /* Imagen del botón de créditos */
+    background-size: cover;
+    background-position: center;
+    width: 300px; /* Tamaño igual al de los botones de nivel */
+    height: 150px;
+    text-align: center;
+    line-height: 150px;
+    color: white; /* Texto visible para los créditos */
+    font-size: 24px;
+    font-family: 'Uncial Antiqua', serif;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    margin: 10px 0; /* Separación entre los botones */
+}
+
+#credits-button:hover {
+    opacity: 0.8;
+}

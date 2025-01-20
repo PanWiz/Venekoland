@@ -1,234 +1,241 @@
-        // configuración del juego
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const width = canvas.width;
-        const height = canvas.height;
-        
-        // fisica del jugador y enemigo
-        const jugador = {
-            x: 100,
-            y: 100,
-            width: 50,
-            height: 70,
-            velocidadX: 0,
-            velocidadY: 0,
-            gravedad: 0.5,
-            salto: -10,
-            colision: false,
-            vidas: 3
-        };
-        const enemigo = {
-        x: 300, 
-        y: 100, 
-        width: 50, 
-        height: 50, 
-        velocidadX: 2, 
-        velocidadY: 0, 
-        gravedad: 0.5, 
-        frameX: 0, 
-        frameY: 0, 
-        widthFrame: 64,
-        heightFrame: 64,
-        frameCount: 4, 
-        frameRate: 10, 
-        frameInterval: 0};
-        
-        // la colision de la plataforma
-        const plataforma = {
-            x: 1,
-            y: 300,
-            width: 800,
-            height: 500
-        };
-        
-        // la monedita esa amarilla
-        const moneda = {
-            x: 400,
-            y: 200,
-            width: 20,
-            height: 20
-        };
-        
-        const jugadorSprite = new Image();
-        jugadorSprite.src = '../../sprites/idle.webp';
-        
-        const enemigoSprite = new Image(); 
-        enemigoSprite.src = '../../sprites/yeti.gif'
-        
-        // Función para dibujar el jugador
-        function dibujarJugador() {
-            ctx.drawImage(jugadorSprite, jugador.x, jugador.y, jugador.width, jugador.height);
-        }
-        
-        function dibujarEnemigo() { ctx.drawImage(enemigoSprite, enemigo.x, enemigo.y, enemigo.width, enemigo.height); }
-        
-        // Función para dibujar un árbol JSAJASJASJ
-        function dibujarArbol(x, y) {
-            // Dibuja el tronco
-            ctx.fillStyle = 'saddlebrown';
-            ctx.fillRect(x, y, 20, 50);
-        
-            // Dibuja las hojas
-            ctx.fillStyle = 'green';
-            ctx.beginPath();
-            ctx.moveTo(x - 30, y);
-            ctx.lineTo(x + 50, y);
-            ctx.lineTo(x + 10, y - 60);
-            ctx.closePath();
-            ctx.fill();
-        }
-        
-        // Función para dibujar una casa pa adornar
-        function dibujarCasa(x, y) {
-            ctx.fillStyle = 'peru';
-            ctx.fillRect(x, y, 100, 100);
-        
-            ctx.fillStyle = 'sienna';
-            ctx.beginPath();
-            ctx.moveTo(x - 10, y);
-            ctx.lineTo(x + 50, y - 50);
-            ctx.lineTo(x + 110, y);
-            ctx.closePath();
-            ctx.fill();
-        }
-        
-        // Función para dibujar la plataforma
-        function dibujarPlataforma() {
-            ctx.fillStyle = 'green';
-            ctx.fillRect(plataforma.x, plataforma.y, plataforma.width, plataforma.height);
-        }
-        
-        // Función para dibujar la moneda
-        function dibujarMoneda() {
-            ctx.fillStyle = 'yellow';
-            ctx.fillRect(moneda.x, moneda.y, moneda.width, moneda.height);
-        }
-        
-        // Función para mostrar la pantalla de Game Over
-        function mostrarGameOver() {
-            const gameOverScreen = document.createElement('div');
-            gameOverScreen.style.position = 'absolute';
-            gameOverScreen.style.top = '50%';
-            gameOverScreen.style.left = '50%';
-            gameOverScreen.style.transform = 'translate(-50%, -50%)';
-            gameOverScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            gameOverScreen.style.color = 'white';
-            gameOverScreen.style.padding = '20px';
-            gameOverScreen.style.textAlign = 'center';
-            gameOverScreen.innerHTML = '<h1>Moriste</h1><button id="reaparecerBtn">Reaparecer</button>';
-            document.body.appendChild(gameOverScreen);
-        
-            const reaparecerBtn = document.getElementById('reaparecerBtn');
-            reaparecerBtn.addEventListener('click', function() {
-                document.body.removeChild(gameOverScreen);
-                reiniciarJuego();
-            });
-        }
-        
-        // Función para reiniciar el juego
-        function reiniciarJuego() {
-            jugador.x = 100;
-            jugador.y = 100;
-            jugador.velocidadX = 0;
-            jugador.velocidadY = 0;
-            jugador.vidas = 3;
-        
-            moneda.x = 400;
-            moneda.y = 200;
-        
-            requestAnimationFrame(actualizar);
-        }
-        
-        // Función para actualizar el juego
-        function actualizar() {
-            jugador.x += jugador.velocidadX;
-            jugador.velocidadY += jugador.gravedad;
-            jugador.y += jugador.velocidadY;
-        
-            // Verificar colisión con la moneda
-            if (jugador.x + jugador.width > moneda.x && jugador.x < moneda.x + moneda.width && jugador.y + jugador.height > moneda.y && jugador.y < moneda.y + moneda.height) {
-                moneda.x = -100;
-                moneda.y = -100;
-            }
-        
-            // Colisión con la plataforma
-            if (jugador.y + jugador.height > plataforma.y && jugador.x + jugador.width > plataforma.x && jugador.x < plataforma.x + plataforma.width) {
-                jugador.y = plataforma.y - jugador.height;
-                jugador.velocidadY = 0;
-                jugador.colision = true;
-            } else {
-                jugador.colision = false;
-            }
-        
-            // Limitar movimiento horizontal
-            if (jugador.x < 0) {
-                jugador.x = 0;
-            } else if (jugador.x + jugador.width > width) {
-                jugador.x = width - jugador.width;
-            }
-        
-            // Actualiza el enemigo
-            enemigo.velocidadY += enemigo.gravedad;
-            enemigo.y += enemigo.velocidadY;
-            enemigo.x += enemigo.velocidadX;
-        
-            if (enemigo.x + enemigo.width > jugador.x && enemigo.x < jugador.x + jugador.width && enemigo.y + enemigo.height > jugador.y && enemigo.y < jugador.y + jugador.height) {
-                jugador.vidas--;
-                if (jugador.vidas <= 0) {
-                    jugador.velocidadX = 0;
-                    jugador.velocidadY = 0;
-                    mostrarGameOver();
-                    return;
-                }
-            }
-        
-            if (enemigo.x + enemigo.width > plataforma.x && enemigo.x < plataforma.x + plataforma.width && enemigo.y + enemigo.height > plataforma.y) {
-                enemigo.y = plataforma.y - enemigo.height;
-                enemigo.velocidadY = 0;
-            } else if (enemigo.x + enemigo.width > width) {
-                enemigo.x = width - enemigo.width;
-                enemigo.velocidadX = -enemigo.velocidadX;
-            } else if (enemigo.x < 0) {
-                enemigo.x = 0;
-                enemigo.velocidadX = -enemigo.velocidadX;
-            }
-        
-            // Dibujar todo
-            ctx.clearRect(0, 0, width, height);
-            dibujarArbol(100, 250); // Dibuja el árbol
-            dibujarCasa(500, 200); // Dibuja la casa
-            dibujarJugador();
-            dibujarEnemigo();
-            dibujarPlataforma();
-            dibujarMoneda();
-        
-            // Repetir
-            requestAnimationFrame(actualizar);
-        }
-        
-        // Función para las teclas
-        function manejarTeclado(event) {
-            if (event.type === 'keydown') {
-                if (event.key === 'ArrowLeft') {
-                    jugador.velocidadX = -3;
-                } else if (event.key === 'ArrowRight') {
-                    jugador.velocidadX = 3;
-                } else if (event.key === 'ArrowUp' && jugador.colision) {
-                    jugador.velocidadY = jugador.salto;
-                }
-            } else if (event.type === 'keyup') {
-                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                    jugador.velocidadX = 0;
-                }
-            }
-        }
-        
-        // activa las funciones
-        document.addEventListener('keydown', manejarTeclado);
-        document.addEventListener('keyup', manejarTeclado);
-        
-        // Iniciar juego
-        document.addEventListener('DOMContentLoaded', function() {
-            actualizar();
-        });
-        
+const canvas = document.querySelector('canvas');
+const c = canvas.getContext('2d');
+
+// Ajustar el canvas al tamaño completo de la ventana
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Mantener el tamaño escalado
+const scaledCanvas = {
+  width: canvas.width / 4,
+  height: canvas.height / 4,
+};
+
+// Redibujar el canvas en caso de que la ventana cambie de tamaño
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  scaledCanvas.width = canvas.width / 4;
+  scaledCanvas.height = canvas.height / 4;
+});
+
+const floorCollisions2D = [];
+for (let i = 0; i < floorCollisions.length; i += 36) {
+  floorCollisions2D.push(floorCollisions.slice(i, i + 36));
+}
+
+const collisionBlocks = [];
+floorCollisions2D.forEach((row, y) => {
+  row.forEach((symbol, x) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({
+          position: { x: x * 16, y: y * 16 },
+        })
+      );
+    }
+  });
+});
+
+const platformCollisions2D = [];
+for (let i = 0; i < platformCollisions.length; i += 36) {
+  platformCollisions2D.push(platformCollisions.slice(i, i + 36));
+}
+
+const platformCollisionBlocks = [];
+platformCollisions2D.forEach((row, y) => {
+  row.forEach((symbol, x) => {
+    if (symbol === 202) {
+      platformCollisionBlocks.push(
+        new CollisionBlock({
+          position: { x: x * 16, y: y * 16 },
+          height: 4,
+        })
+      );
+    }
+  });
+});
+
+// un array de monedas que estarán sobre las plataformas, una moneda por plataforma
+const coins = platformCollisionBlocks.map(platform => {
+  return new Coin({
+    position: { x: platform.position.x + 2, y: platform.position.y - 16 },
+    imageSrc: './img/warrior/mangopixel.png' 
+  });
+});
+
+const gravity = 0.12;
+
+//todo al respecto del jugador y sus png
+const player = new Player({
+  position: { x: 100, y: 300 },
+  collisionBlocks,
+  platformCollisionBlocks,
+  imageSrc: './img/warrior/Idle.png',
+  frameRate: 8,
+  animations: {
+    Idle: { imageSrc: './img/warrior/Idle.png', frameRate: 8, frameBuffer: 10 },
+    Run: { imageSrc: './img/warrior/Run.png', frameRate: 8, frameBuffer: 5 },
+    Jump: { imageSrc: './img/warrior/Jump.png', frameRate: 2, frameBuffer: 10 },
+    Fall: { imageSrc: './img/warrior/Fall.png', frameRate: 2, frameBuffer: 8 },
+    FallLeft: { imageSrc: './img/warrior/FallLeft.png', frameRate: 2, frameBuffer: 8 },
+    RunLeft: { imageSrc: './img/warrior/RunLeft.png', frameRate: 8, frameBuffer: 5 },
+    IdleLeft: { imageSrc: './img/warrior/IdleLeft.png', frameRate: 8, frameBuffer: 10 },
+    JumpLeft: { imageSrc: './img/warrior/JumpLeft.png', frameRate: 2, frameBuffer: 10 },
+  },
+});
+
+const keys = {
+  d: { pressed: false },
+  a: { pressed: false },
+};
+
+const background = new Sprite({
+  position: { x: 0, y: 0 },
+  imageSrc: './img/background.png',
+});
+
+const backgroundImageHeight = 432;
+
+const camera = {
+  position: { x: 0, y: -backgroundImageHeight + scaledCanvas.height },
+};
+
+let coinCount = 0; // Contador de monedas
+
+function drawCoinCounter() {
+  c.fillStyle = 'black';
+  c.font = '30px Arial';
+  c.fillText(`Monedas: ${coinCount}`, 10, 30); // Mostrar el contador en la parte superior izquierda
+}
+
+// carga de la imagen de la moneda
+const coinImage = new Image();
+coinImage.src = './img/warrior/mangopixel.png'; 
+coinImage.onload = function () {
+  console.log('Imagen de la moneda cargada correctamente');
+};
+
+coinImage.onerror = function () {
+  console.error('Error al cargar la imagen de la moneda');
+};
+
+// Función de animación
+function animate() {
+  window.requestAnimationFrame(animate);
+  c.fillStyle = 'white';
+  c.fillRect(0, 0, canvas.width, canvas.height);
+
+  c.save();
+  c.scale(4, 4); // escalado del canvas para pantallas
+  c.translate(camera.position.x, camera.position.y);
+  background.update();
+
+  player.checkForHorizontalCanvasCollision();
+  player.update();
+
+  // Verificar la colisión del jugador con las monedas
+  coins.forEach(coin => {
+    if (!coin.collected && collision({ object1: player, object2: coin })) {
+      coin.collect();
+      coinAudio.currentTime = 0;
+      coinAudio.play();
+      coinCount++; //para incrementar lasmonedas
+      console.log(`Monedas recogidas: ${coinCount}`);
+    }
+     // dibuja las monedas
+    coin.update();
+  });
+
+  player.velocity.x = 0;
+  if (keys.d.pressed) {
+    player.switchSprite('Run');
+    player.velocity.x = 2;
+    player.lastDirection = 'right';
+    player.shouldPanCameraToTheLeft({ canvas, camera });
+  } else if (keys.a.pressed) {
+    player.switchSprite('RunLeft');
+    player.velocity.x = -2;
+    player.lastDirection = 'left';
+    player.shouldPanCameraToTheRight({ canvas, camera });
+  } else if (player.velocity.y === 0) {
+    if (player.lastDirection === 'right') player.switchSprite('Idle');
+    else player.switchSprite('IdleLeft');
+  }
+
+  if (player.velocity.y < 0) {
+    player.shouldPanCameraDown({ camera, canvas });
+    if (player.lastDirection === 'right') player.switchSprite('Jump');
+    else player.switchSprite('JumpLeft');
+  } else if (player.velocity.y > 0) {
+    player.shouldPanCameraUp({ camera, canvas });
+    if (player.lastDirection === 'right') player.switchSprite('Fall');
+    else player.switchSprite('FallLeft');
+  }
+
+ //dibuja el contador
+  drawCoinCounter();
+  c.restore();
+}
+
+animate();
+//funcion par crear sonidos
+function CreateAudio(src) {
+  const audio = new Audio(src);
+  audio.load();
+  return audio;
+}
+  const RunAudioD = CreateAudio('./audio/Running.mp3');
+  const RunAudioA = CreateAudio('./audio/Running.mp3');
+  const JumpAudio = CreateAudio('./audio/Jumping.mp3');
+  const coinAudio = CreateAudio('./audio/coin.mp3');
+  const DoubleJumpAudio = CreateAudio('./audio/doublejump.mp3');
+
+// Eventos de teclas
+window.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'd':
+      keys.d.pressed = true;
+      RunAudioD.loop = true;
+      RunAudioD.play();
+      break;
+    case 'a':
+      keys.a.pressed = true;
+      RunAudioA.loop = true;
+      RunAudioA.play();
+      break;
+    case 'w':
+      // da el salto corto si el jugador está en el suelo
+      if (player.velocity.y === 0) {
+        JumpAudio.play();
+        player.velocity.y = -4;
+        RunAudioD.pause();
+        RunAudioA.pause();
+      }
+      case ' ':
+      // deja dar un salto largo si el jugador está en el suelo
+      if (player.velocity.y === 0) {
+        DoubleJumpAudio.play();
+        player.velocity.y = -6;
+        RunAudioD.pause();
+        RunAudioA.pause();
+      }
+      break;
+  }
+});
+
+window.addEventListener('keyup', (event) => {
+  switch (event.key) {
+    case 'd':
+      keys.d.pressed = false;
+      RunAudioD.pause(); //cada que presione d o a se pausa el audio
+      player.velocity.x = 0;
+      break;
+    case 'a':
+      keys.a.pressed = false;
+      RunAudioA.pause();
+      player.velocity.x = 0;
+      break;
+  }
+});
