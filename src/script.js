@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Obtener el archivo de audio para el sonido del clic
   const clickSound = document.getElementById('click-sound');
-  const backgroundAudio = new Audio('/sounds/fondo.mp3');
+  const backgroundAudio = new Audio('../sounds/fondo.mp3');
   
   // Función para reproducir el sonido del clic
   function playClickSound() {
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Función para reproducir o pausar el audio de fondo
   function toggleBackgroundAudio(play) {
+    backgroundAudio.volume = 0.2;
     if (play) {
       backgroundAudio.play().catch((error) => {
         console.error('Error al intentar reproducir el audio de fondo:', error);

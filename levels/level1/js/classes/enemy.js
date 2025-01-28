@@ -39,6 +39,12 @@ class Enemy extends Sprite {
       width: 200,
       height: 80,
     };
+
+    // Cargar el sonido de pasos
+    this.stepSound = new Audio('./audio/Running.mp3');
+    this.stepSound.volume = 0.3; // Ajusta el volumen si es necesario
+    this.isMoving = false;
+    this.stepSound.loop = true; // Hacer que el sonido se repita en bucle
   }
 
   updateCamerabox() {
@@ -65,6 +71,17 @@ class Enemy extends Sprite {
     this.applyGravity();
     this.updateHitbox();
     this.checkForVerticalCollisions();
+
+    // Reproducir el sonido de pasos si el enemigo se está moviendo
+    if (this.velocity.x !== 0 && !this.isMoving) {
+      this.isMoving = true;
+      this.stepSound.play().catch(error => {
+        console.log("La reproducción automática del sonido fue bloqueada. Interactúa con la página para habilitar el sonido.");
+      });
+    } else if (this.velocity.x === 0 && this.isMoving) {
+      this.isMoving = false;
+      this.stepSound.pause();
+    }
   }
 
   updateHitbox() {

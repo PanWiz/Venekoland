@@ -198,7 +198,8 @@ function showWinMessage() {
   winMessage.style.color = "#FFFFFF";
   winMessage.style.textShadow = "2px 2px 4px #000000";
   winMessage.style.zIndex = 1000;
-  winMessage.textContent = "Your Win!";
+  winMessage.textContent = "You Win!";
+  victoryAudio.play();
   document.body.appendChild(winMessage);
 
   // Activar el confeti
@@ -454,6 +455,7 @@ const JumpAudio = CreateAudio('./audio/Jumping.mp3');
 const coinAudio = CreateAudio('./audio/coin.mp3');
 const DoubleJumpAudio = CreateAudio('./audio/doublejump.mp3');
 const damageAudio = CreateAudio('./audio/damage.mp3'); // Sonido de daño
+const victoryAudio = CreateAudio('./audio/victory.mp3');
 
 // Eventos de teclas
 window.addEventListener('keydown', (event) => {
