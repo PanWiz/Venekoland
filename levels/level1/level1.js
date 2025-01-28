@@ -456,10 +456,29 @@ const coinAudio = CreateAudio('./audio/coin.mp3');
 const DoubleJumpAudio = CreateAudio('./audio/doublejump.mp3');
 const damageAudio = CreateAudio('./audio/damage.mp3'); // Sonido de daño
 const victoryAudio = CreateAudio('./audio/victory.mp3');
+const backSound = new Audio('./audio/backlevel1.mp3');
+
+function fondosonido(play) {
+  backSound.volume = 0.1;
+    if (play) {
+      backSound.play().catch((error) => {
+        console.error('Error al intentar reproducir el audio de fondo:', error);
+      });
+    } else {
+      backSound.pause();
+    }
+  }
+
 
 // Eventos de teclas
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
+    case 'm':
+      fondosonido(true);
+        break;
+      case 'n':
+        fondosonido(false);
+        break;
     case 'd':
       keys.d.pressed = true;
       RunAudioD.loop = true;

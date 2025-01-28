@@ -316,6 +316,14 @@ main {
     margin-top: 15px; /* Reducido el margen superior para acercar los botones */
 }
 
+#credits-menu {
+    font-size: 18px;
+}
+
+#creditos {
+    font-size: 35px;
+}
+
 #options-menu button:hover, #credits-menu button:hover {
     background-color: #2980b9;
     transform: scale(1.05);
