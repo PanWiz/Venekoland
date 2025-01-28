@@ -6,22 +6,25 @@
 </head>
 <body>
     <div id="background-animation"></div> 
-    <header>
+    <video id="intro-video" width="100%" height="100%" autoplay muted playsinline>
+        <source src="/video/presentacion.mp4" type="video/mp4">
+        Tu navegador no soporta el formato de video.
+    </video>
+    <header style="display: none;">
         <h1>VenekoLand</h1>
     </header>
-    <nav>
+    <nav style="display: none;">
         <ul>
             <li><a href="#" id="play-button">Jugar</a></li>
             <li><a href="#" id="credits-button">Créditos</a></li>
             <li><a href="#" id="config-button"></a></li>
         </ul>
     </nav>
-    <main>
-      
+    <main style="display: none;">
     </main>
 
     <!-- opciones -->
-    <div id="options-menu">
+    <div id="options-menu" style="display: none;">
         <h2>Opciones</h2>
         <label for="language-select">Seleccionar idioma:</label>
         <select id="language-select">
@@ -34,7 +37,7 @@
     </div>
 
     <!-- creditos -->
-    <div id="credits-menu">
+    <div id="credits-menu" style="display: none;">
         <h2>Créditos</h2>
         <p>Desarrollado por</p>
         <p> Luis Randazzo</p>
@@ -44,14 +47,12 @@
         <button id="close-credits">Cerrar</button>
     </div>
 
-    
-    <div id="overlay"></div>
+    <div id="overlay" style="display: none;"></div>
 
     <audio id="click-sound" preload="auto">
         <source src="/sounds/hover.mp3" type="audio/mp3">
         Tu navegador no soporta el formato de audio.
     </audio>
 
-    
     <script src="/src/script.js"></script>
 </body>

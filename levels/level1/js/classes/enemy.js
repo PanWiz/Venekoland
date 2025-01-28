@@ -1,61 +1,193 @@
 class Enemy extends Sprite {
-    constructor({ position, imageSrc, frameRate, frameBuffer, scale = 1, collisionBlocks }) {
-      super({
-        position,
-        imageSrc,
-        frameRate,
-        frameBuffer,
-        scale,
-      });
-      this.velocity = { x: 0, y: 0 };
-      this.collisionBlocks = collisionBlocks;
-      this.hitbox = {
-        position: { x: this.position.x, y: this.position.y },
-        width: 10,
-        height: 10,
-      };
+  constructor({
+    position,
+    collisionBlocks,
+    platformCollisionBlocks,
+    imageSrc,
+    frameRate,
+    scale = 0.5,
+    player,
+    speed = 1,
+    jumpHeight = -3.5,
+  }) {
+    super({ imageSrc, frameRate, scale });
+    this.position = position;
+    this.velocity = {
+      x: 0,
+      y: 1,
+    };
+
+    this.collisionBlocks = collisionBlocks;
+    this.platformCollisionBlocks = platformCollisionBlocks;
+    this.player = player;
+    this.speed = speed;
+    this.jumpHeight = jumpHeight;
+    this.hitbox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 10,
+      height: 10,
+    };
+
+    this.camerabox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
+  }
+
+  updateCamerabox() {
+    this.camerabox = {
+      position: {
+        x: this.position.x - 50,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
+  }
+
+  update() {
+    this.updateFrames();
+    this.updateHitbox();
+    this.updateCamerabox();
+    this.draw();
+    this.followPlayer();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+    this.updateHitbox();
+    this.checkForHorizontalCollisions();
+    this.applyGravity();
+    this.updateHitbox();
+    this.checkForVerticalCollisions();
+  }
+
+  updateHitbox() {
+    this.hitbox = {
+      position: {
+        x: this.position.x + 35,
+        y: this.position.y + 26,
+      },
+      width: 14,
+      height: 27,
+    };
+  }
+
+  followPlayer() {
+    const distanceX = this.player.position.x - this.position.x;
+    const distanceY = this.player.position.y - this.position.y;
+
+    if (Math.abs(distanceX) > 5) {
+      this.velocity.x = this.speed * Math.sign(distanceX);
+    } else {
+      this.velocity.x = 0;
     }
-  
-    move() {
-      this.position.x += this.velocity.x;
-      this.position.y += this.velocity.y;
-      this.updateHitbox();
+
+    // Hacer que el enemigo salte solo cuando la diferencia en Y es significativa
+    if (distanceY < -10 && this.isOnGround()) {
+      this.velocity.y = this.jumpHeight;
     }
-  
-    updateHitbox() {
-      this.hitbox = {
-        position: {
-          x: this.position.x + 35, // Ajusta según el enemigo
-          y: this.position.y + 26,
-        },
-        width: 14,
-        height: 27,
-      };
-    }
-  
-    // Método para hacer que el enemigo ataque
-    attack(player) {
-      if (collision({ object1: this.hitbox, object2: player.hitbox })) {
-        console.log('¡El enemigo ha golpeado al jugador!');
-        // Aquí podrías restar vida al jugador o hacer alguna otra acción
+  }
+
+  isOnGround() {
+    return this.velocity.y === 0;
+  }
+
+  checkForHorizontalCollisions() {
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+      const collisionBlock = this.collisionBlocks[i];
+
+      if (
+        collision({
+          object1: this.hitbox,
+          object2: collisionBlock,
+        })
+      ) {
+        if (this.velocity.x > 0) {
+          this.velocity.x = 0;
+
+          const offset =
+            this.hitbox.position.x - this.position.x + this.hitbox.width;
+
+          this.position.x = collisionBlock.position.x - offset - 0.01;
+          break;
+        }
+
+        if (this.velocity.x < 0) {
+          this.velocity.x = 0;
+
+          const offset = this.hitbox.position.x - this.position.x;
+
+          this.position.x =
+            collisionBlock.position.x + collisionBlock.width - offset + 0.01;
+          break;
+        }
       }
     }
-  
-    update() {
-      this.updateFrames();
-      this.draw();
-      this.move();
+  }
+
+  applyGravity() {
+    this.velocity.y += gravity;
+    this.position.y += this.velocity.y;
+  }
+
+  checkForVerticalCollisions() {
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+      const collisionBlock = this.collisionBlocks[i];
+
+      if (
+        collision({
+          object1: this.hitbox,
+          object2: collisionBlock,
+        })
+      ) {
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+
+          this.position.y = collisionBlock.position.y - offset - 0.01;
+          break;
+        }
+
+        if (this.velocity.y < 0) {
+          this.velocity.y = 0;
+
+          const offset = this.hitbox.position.y - this.position.y;
+
+          this.position.y =
+            collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          break;
+        }
+      }
+    }
+
+    // colisión de bloques de plataforma
+    for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
+      const platformCollisionBlock = this.platformCollisionBlocks[i];
+
+      if (
+        platformCollision({
+          object1: this.hitbox,
+          object2: platformCollisionBlock,
+        })
+      ) {
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+
+          this.position.y = platformCollisionBlock.position.y - offset - 0.01;
+          break;
+        }
+      }
     }
   }
-  
-  // Función de colisión para detectar cuando los objetos se tocan
-  function collision({ object1, object2 }) {
-    return (
-      object1.position.x + object1.width >= object2.position.x &&
-      object1.position.x <= object2.position.x + object2.width &&
-      object1.position.y + object1.height >= object2.position.y &&
-      object1.position.y <= object2.position.y + object2.height
-    );
-  }
-  
-  //aún no logro que sea funcional
+}

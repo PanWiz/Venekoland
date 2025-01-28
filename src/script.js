@@ -1,32 +1,20 @@
-function CreateBackgroundAudio(src) {
-  const audio = new Audio(src);
-  audio.load();
-  return audio;
-}
-
-  const AudioFondo = CreateBackgroundAudio('/sounds/fondo.mp3');
-
-const keys = {
-  m: { pressed: false },
-  n: { pressed: false },
-};
-
-window.addEventListener('keydown', (event) => {
-  switch (event.key) {
-    case 'm':
-      keys.m.pressed = true;
-      AudioFondo.play();
-      break;
-    case 'n':
-      keys.n.pressed = true;
-      AudioFondo.pause();
-      break;
-  }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
+  const introVideo = document.getElementById('intro-video');
+
+  introVideo.addEventListener('loadeddata', () => {
+    introVideo.play();
+  });
+
+  introVideo.addEventListener('ended', () => {
+    introVideo.style.display = 'none';
+    document.querySelector('header').style.display = 'block';
+    document.querySelector('nav').style.display = 'block';
+    document.querySelector('main').style.display = 'block';
+  });
+
   // Obtener el archivo de audio para el sonido del clic
   const clickSound = document.getElementById('click-sound');
+  const backgroundAudio = new Audio('/sounds/fondo.mp3');
   
   // Función para reproducir el sonido del clic
   function playClickSound() {
@@ -34,6 +22,29 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error al intentar reproducir el sonido del clic:', error);
     });
   }
+
+  // Función para reproducir o pausar el audio de fondo
+  function toggleBackgroundAudio(play) {
+    if (play) {
+      backgroundAudio.play().catch((error) => {
+        console.error('Error al intentar reproducir el audio de fondo:', error);
+      });
+    } else {
+      backgroundAudio.pause();
+    }
+  }
+
+  // Control de reproducción de audio de fondo
+  window.addEventListener('keydown', (event) => {
+    switch (event.key) {
+      case 'm':
+        toggleBackgroundAudio(true);
+        break;
+      case 'n':
+        toggleBackgroundAudio(false);
+        break;
+    }
+  });
 
   // Selecciona el botón de jugar
   const playButton = document.getElementById('play-button');
@@ -44,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
       // Oculta el menú principal
       document.querySelector('nav').style.display = 'none';
 
-     
       const existingLevelSelect = document.getElementById('level-select');
       if (existingLevelSelect) {
         return;
@@ -59,8 +69,9 @@ document.addEventListener('DOMContentLoaded', function () {
         <h2>Selecciona un nivel</h2>
         <ul>
           <li><button id="level-1-button">Nivel 1</button></li>
+          <li><button id="level-2-button">Nivel 2</button></li>
         </ul>
-        <button id="back-to-menu">Volver al menú</button>
+        <button id="back-to-menu" class="back-button">Volver al menú</button>
       `;
 
       // Agrega la selección de niveles al elemento main
@@ -82,6 +93,11 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = '/levels/level1/level1.html';
       });
 
+      const level2Button = document.getElementById('level-2-button');
+      level2Button.addEventListener('click', () => {
+        playClickSound();  // Reproducir el sonido del clic
+        window.location.href = '/levels/level2/level2.html';
+      });
     });
   }
 
@@ -122,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeOptionsButton = document.getElementById('close-options');
   if (closeOptionsButton) {
     closeOptionsButton.addEventListener('click', () => {
-      playClickSound()
+      playClickSound();
       closeAllMenus();
     });
   }
@@ -130,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeCreditsButton = document.getElementById('close-credits');
   if (closeCreditsButton) {
     closeCreditsButton.addEventListener('click', () => {
-      playClickSound()
+      playClickSound();
       closeAllMenus();
     });
   }
@@ -138,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const languageSelect = document.getElementById('language-select');
   if (languageSelect) {
     languageSelect.addEventListener('change', function(e) {
-      playClickSound()
+      playClickSound();
       const selectedLanguage = e.target.value;
       console.log(`Idioma seleccionado: ${selectedLanguage}`);
     });
